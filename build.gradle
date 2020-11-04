@@ -10,13 +10,15 @@ plugins {
     id 'kr.entree.spigradle' version '2.2.3'
     id 'java'
     id 'jacoco'
+    id "io.freefair.lombok" version "5.1.0"
+    id 'io.ebean' version '12.3.6'
 }
 
 apply from: "$rootDir/gradle/jacoco.gradle"
 apply from: "$rootDir/gradle/publish.gradle"
 
-sourceCompatibility = 8
-targetCompatibility = 8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 ext {
     mcVersion = project.property("mcVersion")
@@ -29,7 +31,7 @@ spigot {
     authors = [project.property("author")]
     apiVersion = project.property("apiVersion")
     load = STARTUP
-    //    depends = ['']
+    depends = ['ebean-wrapper']
 }
 
 compileJava {
@@ -42,53 +44,44 @@ compileJava {
 archivesBaseName = project.property("pluginName")
 
 repositories {
+    mavenLocal()
     mavenCentral()
     jcenter()
 
     spigot()
-//    bungeecord()
-//    paper()
-//    protocolLib()
-//    enginehub()
-
-    maven {
-        name = 'github'
-        url = 'https://maven.pkg.github.com/Silthus'
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    compileOnly lombok()
-    annotationProcessor lombok()
 
     compileOnly spigot(mcVersion)
 
     //Add dependencies here
+    implementation 'net.silthus:ebean-wrapper:2.3.2'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
     testImplementation "org.mockito:mockito-core:3.+"
     testImplementation mockBukkit()
     testImplementation 'org.assertj:assertj-core:3.+'
-    testImplementation lombok()
-    testAnnotationProcessor lombok()
+
+    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    testImplementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+    testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+    testImplementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.0'
+    testImplementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
+    testImplementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.32.3.2'
+    testImplementation group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
 }
 
-shadowJar {
-    classifier = ''
+//shadowJar {
+//    classifier = ''
 //    dependencies {
-//        include(dependency('co.aikar:acf-paper:0.5.0-SNAPSHOT'))
 //    }
-//    relocate 'co.aikar.commands', "${packageName}.acf"
-//    relocate 'co.aikar.locales', "${packageName}.locales"
-}
-
-tasks.build.dependsOn(shadowJar)
-tasks.publish.dependsOn(shadowJar)
+//}
+//
+//tasks.build.dependsOn(shadowJar)
+//tasks.publish.dependsOn(shadowJar)
 
 test {
     useJUnitPlatform()

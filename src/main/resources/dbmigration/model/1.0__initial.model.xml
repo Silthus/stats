@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="sstats_player_statistics" pkName="pk_sstats_player_statistics">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="player_id" type="varchar"/>
+            <column name="player_name" type="varchar"/>
+            <column name="count" type="bigint" notnull="true"/>
+            <column name="statistic_id" type="bigint" references="sstats_statistics.id" foreignKeyName="fk_sstats_player_statistics_statistic_id" foreignKeyIndex="ix_sstats_player_statistics_statistic_id"/>
+        </createTable>
+        <createTable name="sstats_statistics" pkName="pk_sstats_statistics">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="identifier" type="varchar"/>
+            <column name="type" type="varchar(11)" checkConstraint="check ( type in ('ONLINE_TIME'))" checkConstraintName="ck_sstats_statistics_type"/>
+            <column name="name" type="varchar"/>
+            <column name="description" type="varchar"/>
+            <column name="source" type="varchar"/>
+            <column name="enabled" type="boolean" defaultValue="false" notnull="true"/>
+        </createTable>
+    </changeSet>
+</migration>
