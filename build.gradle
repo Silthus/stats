@@ -58,12 +58,15 @@ dependencies {
 
     //Add dependencies here
     implementation 'net.silthus:ebean-wrapper:2.3.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.3'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
     testImplementation "org.mockito:mockito-core:3.+"
     testImplementation mockBukkit()
     testImplementation 'org.assertj:assertj-core:3.+'
+
+    testImplementation 'io.ebean:ebean-test:12.5.1'
 
     testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.3"
     testImplementation "org.glassfish.jaxb:jaxb-runtime:2.3.3"
@@ -74,14 +77,16 @@ dependencies {
     testImplementation group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
 }
 
-//shadowJar {
-//    classifier = ''
-//    dependencies {
-//    }
-//}
-//
-//tasks.build.dependsOn(shadowJar)
-//tasks.publish.dependsOn(shadowJar)
+shadowJar {
+    classifier = ''
+    dependencies {
+        include(dependency('com.fasterxml.jackson.core::'))
+    }
+    relocate 'com.fasterxml.jackson', "shadow.jackson"
+}
+
+tasks.build.dependsOn(shadowJar)
+tasks.publish.dependsOn(shadowJar)
 
 test {
     useJUnitPlatform()

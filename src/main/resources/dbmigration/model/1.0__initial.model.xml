@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
     <changeSet type="apply">
-        <createTable name="sstats_player_statistics" pkName="pk_sstats_player_statistics">
-            <column name="id" type="bigint" primaryKey="true"/>
-            <column name="player_id" type="varchar"/>
+        <createTable name="sstats_player_statistics" identityType="external" pkName="pk_sstats_player_statistics">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="player_id" type="uuid"/>
             <column name="player_name" type="varchar"/>
-            <column name="count" type="bigint" notnull="true"/>
-            <column name="statistic_id" type="bigint" references="sstats_statistics.id" foreignKeyName="fk_sstats_player_statistics_statistic_id" foreignKeyIndex="ix_sstats_player_statistics_statistic_id"/>
+            <column name="data" type="json"/>
+            <column name="statistic_id" type="varchar(11)" references="sstats_statistics.id" foreignKeyName="fk_sstats_player_statistics_statistic_id" foreignKeyIndex="ix_sstats_player_statistics_statistic_id"/>
+            <column name="version" type="bigint" notnull="true"/>
+            <column name="when_created" type="timestamp" notnull="true"/>
+            <column name="when_modified" type="timestamp" notnull="true"/>
         </createTable>
-        <createTable name="sstats_statistics" pkName="pk_sstats_statistics">
-            <column name="id" type="bigint" primaryKey="true"/>
-            <column name="identifier" type="varchar"/>
-            <column name="type" type="varchar(11)" checkConstraint="check ( type in ('ONLINE_TIME'))" checkConstraintName="ck_sstats_statistics_type"/>
+        <createTable name="sstats_statistics" identityType="external" pkName="pk_sstats_statistics">
+            <column name="id" type="varchar(11)" primaryKey="true" checkConstraint="check ( id in ('ONLINE_TIME'))" checkConstraintName="ck_sstats_statistics_id"/>
             <column name="name" type="varchar"/>
             <column name="description" type="varchar"/>
             <column name="source" type="varchar"/>
             <column name="enabled" type="boolean" defaultValue="false" notnull="true"/>
+        </createTable>
+        <createTable name="sstats_log" identityType="external" pkName="pk_sstats_log">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="player_statistic_id" type="uuid" references="sstats_player_statistics.id" foreignKeyName="fk_sstats_log_player_statistic_id" foreignKeyIndex="ix_sstats_log_player_statistic_id"/>
+            <column name="diff" type="json"/>
+            <column name="version" type="bigint" notnull="true"/>
+            <column name="when_created" type="timestamp" notnull="true"/>
+            <column name="when_modified" type="timestamp" notnull="true"/>
         </createTable>
     </changeSet>
 </migration>

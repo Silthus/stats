@@ -1,31 +1,109 @@
 package net.silthus.sstats.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import io.ebean.Finder;
+import io.ebean.ValuePair;
+import io.ebean.annotation.DbJson;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.bukkit.OfflinePlayer;
 
-import javax.annotation.processing.Generated;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Entity
 @Table(name = "sstats_player_statistics")
-@Data
+@Getter
+@Setter
 @Accessors(fluent = true)
-@AllArgsConstructor
-public class PlayerStatistic {
+public class PlayerStatistic extends BaseEntity {
 
-    @Id
-    private long id;
-    private String playerId;
+    public static PlayerStatistic of(OfflinePlayer player, Statistic type) {
+
+        return find.query().where()
+                .eq("player_id", player.getUniqueId())
+                .and()
+                .eq("statistic_id", type)
+                .findOneOrEmpty()
+                .orElse(new PlayerStatistic(player, type));
+    }
+
+    public static final Finder<UUID, PlayerStatistic> find = new Finder<>(PlayerStatistic.class);
+
+    private UUID playerId;
     private String playerName;
-    private long count;
+    @DbJson
+    private Map<String, Object> data = new HashMap<>();
 
     @ManyToOne
-    private Statistic statistic;
+    private StatisticEntry statistic;
+    @OneToMany(cascade = CascadeType.REMOVE)
+    private List<StatisticLog> logs = new ArrayList<>();
 
     public PlayerStatistic() {
+    }
+
+    PlayerStatistic(OfflinePlayer player, Statistic type) {
+
+        playerId(player.getUniqueId());
+        playerName(player.getName());
+        statistic(StatisticEntry.finder.byId(type));
+    }
+
+    public PlayerStatistic add(String key, Object value) {
+
+        data().put(key, value);
+        return this;
+    }
+
+    public <TType> Optional<TType> get(String key, Class<TType> typeClass) {
+
+        return Optional.ofNullable(typeClass.cast(data().get(key)));
+    }
+
+    @Override
+    public void save() {
+
+        PlayerStatistic existingBean = getUnsavedEntity();
+        super.save();
+        log(existingBean);
+    }
+
+    @Override
+    public void update() {
+
+        PlayerStatistic existingBean = getUnsavedEntity();
+        super.update();
+        log(existingBean);
+    }
+
+    private PlayerStatistic getUnsavedEntity() {
+
+        return id() != null ? db().find(PlayerStatistic.class, id()) : null;
+    }
+
+    private void log(PlayerStatistic oldBean) {
+
+        Map<String, ValuePair> diff = new HashMap<>();
+        if (oldBean != null) {
+            for (Map.Entry<String, Object> entry : this.data().entrySet()) {
+                diff.put(entry.getKey(), new ValuePair(entry.getValue(), oldBean.data().get(entry.getKey())));
+            }
+            for (Map.Entry<String, Object> entry : oldBean.data().entrySet()) {
+                if (!diff.containsKey(entry.getKey())) {
+                    diff.put(entry.getKey(), new ValuePair(null, entry.getValue()));
+                }
+            }
+        }
+        new StatisticLog(this, diff).save();
     }
 }

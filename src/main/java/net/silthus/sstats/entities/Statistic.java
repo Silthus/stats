@@ -1,53 +1,36 @@
 package net.silthus.sstats.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import io.ebean.annotation.DbEnumValue;
+import lombok.Getter;
+import org.bukkit.OfflinePlayer;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+@Getter
+public enum Statistic {
 
-@Entity
-@Table(name = "sstats_statistics")
-@Data
-@Accessors(fluent = true)
-@AllArgsConstructor
-public class Statistic {
+    ONLINE_TIME("Online Time", "The time in seconds the player has been online on the server.");
 
-    @Id
-    private long id;
-    private String identifier;
-    private StatisticType type;
-    private String name;
-    private String description;
-    private String source;
-    private boolean enabled = true;
+    private final String name;
+    private final String description;
 
-    private List<PlayerStatistic> playerStatistics = new ArrayList<>();
-
-    public Statistic() {
-    }
-
-    public Statistic(StatisticType type, String name, String description, String source) {
-        this.type = type;
-        this.identifier = type.getIdentifier();
+    Statistic(String name, String description) {
         this.name = name;
         this.description = description;
-        this.source = source;
     }
 
-    public Statistic(StatisticType type, String name, String description) {
-        this(type, name, description, null);
+    public PlayerStatistic add(OfflinePlayer player, String key, Object value) {
+
+        PlayerStatistic playerStatistic = PlayerStatistic.of(player, this);
+        playerStatistic.data().put(key, value);
+        return playerStatistic;
     }
 
-    public Statistic(StatisticType type, String name) {
-        this(type, name, type.getDescription());
+    public PlayerStatistic get(OfflinePlayer player) {
+
+        return PlayerStatistic.of(player, this);
     }
 
-    public Statistic(StatisticType type) {
-        this(type, type.getName(), type.getDescription());
+    @DbEnumValue
+    public String getValue() {
+        return name();
     }
 }
