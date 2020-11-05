@@ -20,10 +20,10 @@ import java.util.List;
 @Accessors(fluent = true)
 public class StatisticEntry extends Model {
 
-    public static final Finder<Statistic, StatisticEntry> finder = new Finder<>(StatisticEntry.class);
+    public static final Finder<String, StatisticEntry> finder = new Finder<>(StatisticEntry.class);
 
     @Id
-    private Statistic id;
+    private String id;
     private String name;
     private String description;
     private String source;
@@ -36,7 +36,7 @@ public class StatisticEntry extends Model {
     }
 
     public StatisticEntry(Statistic type, String name, String description, String source) {
-        this.id = type;
+        this.id = type.name();
         this.name = name;
         this.description = description;
         this.source = source;

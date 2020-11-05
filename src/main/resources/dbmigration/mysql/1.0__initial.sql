@@ -14,7 +14,7 @@ create table sstats_player_statistics (
   player_id                     varchar(40),
   player_name                   varchar(255),
   data                          json,
-  statistic_id                  varchar(11),
+  statistic_id                  varchar(255),
   version                       bigint not null,
   when_created                  datetime(6) not null,
   when_modified                 datetime(6) not null,
@@ -22,7 +22,7 @@ create table sstats_player_statistics (
 );
 
 create table sstats_statistics (
-  id                            varchar(11) not null,
+  id                            varchar(255) not null,
   name                          varchar(255),
   description                   varchar(255),
   source                        varchar(255),

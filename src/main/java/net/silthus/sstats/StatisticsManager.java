@@ -18,7 +18,7 @@ public final class StatisticsManager {
     void initStatistics() {
 
         for (Statistic statisticType : Statistic.values()) {
-            StatisticEntry statistic = getDatabase().find(StatisticEntry.class, statisticType);
+            StatisticEntry statistic = getDatabase().find(StatisticEntry.class, statisticType.getValue());
             if (statistic == null) {
                 new StatisticEntry(statisticType).save();
             }

@@ -6,6 +6,7 @@ import io.ebean.ValuePair;
 import io.ebean.annotation.DbJson;
 import io.ebean.annotation.Transactional;
 import io.ebean.text.json.EJson;
+import io.ebeaninternal.server.lib.Str;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -39,7 +40,7 @@ public class PlayerStatistic extends BaseEntity {
         }
     }
 
-    public static PlayerStatistic of(OfflinePlayer player, Statistic type) {
+    public static PlayerStatistic of(OfflinePlayer player, String type) {
 
         return find.query().where()
                 .eq("player_id", player.getUniqueId())
@@ -47,6 +48,11 @@ public class PlayerStatistic extends BaseEntity {
                 .eq("statistic_id", type)
                 .findOneOrEmpty()
                 .orElse(new PlayerStatistic(player, type));
+    }
+
+    public static PlayerStatistic of(OfflinePlayer player, Statistic type) {
+
+        return of(player, type.getValue());
     }
 
     public static final Finder<UUID, PlayerStatistic> find = new Finder<>(PlayerStatistic.class);
@@ -64,11 +70,15 @@ public class PlayerStatistic extends BaseEntity {
     public PlayerStatistic() {
     }
 
-    PlayerStatistic(OfflinePlayer player, Statistic type) {
-
+    PlayerStatistic(OfflinePlayer player, String type) {
         playerId(player.getUniqueId());
         playerName(player.getName());
         statistic(StatisticEntry.finder.byId(type));
+    }
+
+    PlayerStatistic(OfflinePlayer player, Statistic type) {
+
+        this(player, type.getValue());
     }
 
     public PlayerStatistic add(String key, Object value) {

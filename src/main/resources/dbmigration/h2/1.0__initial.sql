@@ -15,7 +15,7 @@ create table sstats_player_statistics (
   player_id                     uuid,
   player_name                   varchar(255),
   data                          clob,
-  statistic_id                  varchar(11),
+  statistic_id                  varchar(255),
   version                       bigint not null,
   when_created                  timestamp not null,
   when_modified                 timestamp not null,
@@ -23,12 +23,11 @@ create table sstats_player_statistics (
 );
 
 create table sstats_statistics (
-  id                            varchar(11) not null,
+  id                            varchar(255) not null,
   name                          varchar(255),
   description                   varchar(255),
   source                        varchar(255),
   enabled                       boolean default false not null,
-  constraint ck_sstats_statistics_id check ( id in ('ONLINE_TIME')),
   constraint pk_sstats_statistics primary key (id)
 );
 
