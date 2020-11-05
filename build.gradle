@@ -82,7 +82,7 @@ shadowJar {
     dependencies {
         include(dependency('com.fasterxml.jackson.core::'))
     }
-    relocate 'com.fasterxml.jackson', "shadow.jackson"
+//    relocate 'com.fasterxml.jackson', "shadow.jackson"
 }
 
 tasks.build.dependsOn(shadowJar)

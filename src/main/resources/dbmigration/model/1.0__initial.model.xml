@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
     <changeSet type="apply">
+        <createTable name="sstats_player_sessions" identityType="external" pkName="pk_sstats_player_sessions">
+            <column name="id" type="uuid" primaryKey="true" identity="true"/>
+            <column name="player_id" type="uuid"/>
+            <column name="player_name" type="varchar"/>
+            <column name="joined" type="timestamp"/>
+            <column name="quit" type="timestamp"/>
+            <column name="reason" type="varchar(8)" checkConstraint="check ( reason in ('KICK','BAN','QUIT','SHUTDOWN','UNKNOWN'))" checkConstraintName="ck_sstats_player_sessions_reason"/>
+        </createTable>
         <createTable name="sstats_player_statistics" identityType="external" pkName="pk_sstats_player_statistics">
             <column name="id" type="uuid" primaryKey="true" identity="true"/>
             <column name="player_id" type="uuid"/>

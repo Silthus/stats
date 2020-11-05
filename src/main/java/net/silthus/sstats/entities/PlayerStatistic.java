@@ -1,8 +1,11 @@
 package net.silthus.sstats.entities;
 
 import io.ebean.Finder;
+import io.ebean.Transaction;
 import io.ebean.ValuePair;
 import io.ebean.annotation.DbJson;
+import io.ebean.annotation.Transactional;
+import io.ebean.text.json.EJson;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -13,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +30,14 @@ import java.util.UUID;
 @Setter
 @Accessors(fluent = true)
 public class PlayerStatistic extends BaseEntity {
+
+    static {
+        try {
+            EJson.write(new Object());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
 
     public static PlayerStatistic of(OfflinePlayer player, Statistic type) {
 
@@ -71,34 +83,38 @@ public class PlayerStatistic extends BaseEntity {
     }
 
     @Override
+    @Transactional
     public void save() {
 
-        PlayerStatistic existingBean = getUnsavedEntity();
+        Map<String, Object> oldData = getOldData();
         super.save();
-        log(existingBean);
+        log(oldData);
     }
 
     @Override
+    @Transactional
     public void update() {
 
-        PlayerStatistic existingBean = getUnsavedEntity();
+        Map<String, Object> oldData = getOldData();
         super.update();
-        log(existingBean);
+        log(oldData);
     }
 
-    private PlayerStatistic getUnsavedEntity() {
+    private Map<String, Object> getOldData() {
 
-        return id() != null ? db().find(PlayerStatistic.class, id()) : null;
+        if (id() == null) return new HashMap<>();
+
+        return PlayerStatistic.find.query().where().idEq(id()).findOneOrEmpty().map(PlayerStatistic::data).orElse(new HashMap<>());
     }
 
-    private void log(PlayerStatistic oldBean) {
+    private void log(Map<String, Object> oldData) {
 
         Map<String, ValuePair> diff = new HashMap<>();
-        if (oldBean != null) {
+        if (!oldData.isEmpty()) {
             for (Map.Entry<String, Object> entry : this.data().entrySet()) {
-                diff.put(entry.getKey(), new ValuePair(entry.getValue(), oldBean.data().get(entry.getKey())));
+                diff.put(entry.getKey(), new ValuePair(entry.getValue(), oldData.get(entry.getKey())));
             }
-            for (Map.Entry<String, Object> entry : oldBean.data().entrySet()) {
+            for (Map.Entry<String, Object> entry : oldData.entrySet()) {
                 if (!diff.containsKey(entry.getKey())) {
                     diff.put(entry.getKey(), new ValuePair(null, entry.getValue()));
                 }

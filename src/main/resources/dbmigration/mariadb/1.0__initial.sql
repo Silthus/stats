@@ -1,4 +1,14 @@
 -- apply changes
+create table sstats_player_sessions (
+  id                            varchar(40) not null,
+  player_id                     varchar(40),
+  player_name                   varchar(255),
+  joined                        datetime(6),
+  quit                          datetime(6),
+  reason                        varchar(8),
+  constraint pk_sstats_player_sessions primary key (id)
+);
+
 create table sstats_player_statistics (
   id                            varchar(40) not null,
   player_id                     varchar(40),

@@ -1,4 +1,15 @@
 -- apply changes
+create table sstats_player_sessions (
+  id                            varchar(40) not null,
+  player_id                     varchar(40),
+  player_name                   varchar(255),
+  joined                        timestamp,
+  quit                          timestamp,
+  reason                        varchar(8),
+  constraint ck_sstats_player_sessions_reason check ( reason in ('KICK','BAN','QUIT','SHUTDOWN','UNKNOWN')),
+  constraint pk_sstats_player_sessions primary key (id)
+);
+
 create table sstats_player_statistics (
   id                            varchar(40) not null,
   player_id                     varchar(40),
