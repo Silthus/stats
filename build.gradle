@@ -65,7 +65,7 @@ dependencies {
     testImplementation mockBukkit()
     testImplementation 'org.assertj:assertj-core:3.+'
 
-    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.3"
     testImplementation "org.glassfish.jaxb:jaxb-runtime:2.3.3"
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     testImplementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.0'
