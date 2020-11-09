@@ -57,7 +57,7 @@ dependencies {
     compileOnly spigot(mcVersion)
 
     //Add dependencies here
-    implementation 'net.silthus:ebean-wrapper:2.3.2'
+    implementation 'net.silthus:ebean-wrapper:2.5.0'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.3'
 
     //Test dependencies
