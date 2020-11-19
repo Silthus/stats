@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Silthus/stats/compare/v1.0.0...v1.1.0) (2020-11-19)
+
+
+### Features
+
+* **session:** track playtime per world ([536823d](https://github.com/Silthus/stats/commit/536823d1cdf865ffd130f72716d18b6825126b82))
+
 # 1.0.0 (2020-11-09)
 
 
