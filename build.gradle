@@ -66,7 +66,7 @@ dependencies {
     testImplementation mockBukkit()
     testImplementation 'org.assertj:assertj-core:3.+'
 
-    testImplementation 'io.ebean:ebean-test:12.5.2'
+    testImplementation 'io.ebean:ebean-test:12.6.0'
 
     testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:3.0.0"
     testImplementation "org.glassfish.jaxb:jaxb-runtime:2.3.3"
