@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/Silthus/stats/compare/v1.1.1...v1.1.2) (2020-11-19)
+
+
+### Bug Fixes
+
+* **db:** add migrations with fixed name ([708a9c3](https://github.com/Silthus/stats/commit/708a9c3a9f6862160eede7ae56e272582d7a0258))
+
 ## [1.1.1](https://github.com/Silthus/stats/compare/v1.1.0...v1.1.1) (2020-11-19)
 
 
