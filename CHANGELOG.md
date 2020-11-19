@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/Silthus/stats/compare/v1.1.0...v1.1.1) (2020-11-19)
+
+
+### Bug Fixes
+
+* **build:** correctly name plugin jar ([6d11313](https://github.com/Silthus/stats/commit/6d1131320b7c8e9461ae564d5de6b0ae9cd4329c))
+
 # [1.1.0](https://github.com/Silthus/stats/compare/v1.0.0...v1.1.0) (2020-11-19)
 
 
