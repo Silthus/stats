@@ -1,15 +1,14 @@
 package net.silthus.sstats.entities;
 
 import io.ebean.Finder;
-import io.ebean.Transaction;
 import io.ebean.ValuePair;
 import io.ebean.annotation.DbJson;
 import io.ebean.annotation.Transactional;
 import io.ebean.text.json.EJson;
-import io.ebeaninternal.server.lib.Str;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.silthus.sstats.entities.query.QPlayerStatistic;
 import org.bukkit.OfflinePlayer;
 
 import javax.persistence.CascadeType;
@@ -42,10 +41,10 @@ public class PlayerStatistic extends BaseEntity {
 
     public static PlayerStatistic of(OfflinePlayer player, String type) {
 
-        return find.query().where()
-                .eq("player_id", player.getUniqueId())
+        return new QPlayerStatistic()
+                .playerId.eq(player.getUniqueId())
                 .and()
-                .eq("statistic_id", type)
+                .statistic.id.eq(type)
                 .findOneOrEmpty()
                 .orElse(new PlayerStatistic(player, type));
     }

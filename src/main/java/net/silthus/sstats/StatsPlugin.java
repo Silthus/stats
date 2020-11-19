@@ -11,7 +11,6 @@ import net.silthus.sstats.entities.StatisticEntry;
 import net.silthus.sstats.entities.StatisticLog;
 import net.silthus.sstats.listener.PlayerListener;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -55,24 +54,15 @@ public class StatsPlugin extends JavaPlugin {
 
     private Database connectToDatabase() {
 
-        FileConfiguration config = getConfig();
-
-        Config dbConfig = Config.builder()
+        Config dbConfig = Config.builder(this)
                 .entities(
                         PlayerSession.class,
                         PlayerStatistic.class,
                         StatisticEntry.class,
                         StatisticLog.class
                 )
-                .driverPath(new File("lib"))
-                .autoDownloadDriver(true)
-                .runMigrations(true)
-                .migrationClass(getClass())
-                .url(config.getString("database.url"))
-                .username(config.getString("database.username"))
-                .password(config.getString("database.password"))
-                .driver(config.getString("database.driver"))
                 .build();
+
         return new EbeanWrapper(dbConfig).getDatabase();
     }
 }

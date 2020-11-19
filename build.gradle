@@ -57,8 +57,12 @@ dependencies {
     compileOnly spigot(mcVersion)
 
     //Add dependencies here
-    implementation 'net.silthus:ebean-wrapper:2.6.1'
+    implementation 'net.silthus:ebean-wrapper:2.7.0'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.3'
+
+    implementation 'io.ebean:ebean:12.5.2'
+    implementation 'io.ebean:ebean-querybean:12.5.2'
+    annotationProcessor 'io.ebean:querybean-generator:12.5.2'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
@@ -66,10 +70,9 @@ dependencies {
     testImplementation mockBukkit()
     testImplementation 'org.assertj:assertj-core:3.+'
 
-    testImplementation 'io.ebean:ebean-test:12.6.0'
+    testImplementation 'io.ebean:ebean-test:12.5.2'
 
-    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:3.0.0"
-    testImplementation "org.glassfish.jaxb:jaxb-runtime:2.3.3"
+    testImplementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     testImplementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.0'
     testImplementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
@@ -94,6 +97,10 @@ test {
         events "passed", "skipped", "failed"
     }
     ignoreFailures = false
+}
+
+ebean {
+    debugLevel = 1
 }
 
 processResources {

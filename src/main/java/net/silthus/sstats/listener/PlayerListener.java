@@ -2,9 +2,11 @@ package net.silthus.sstats.listener;
 
 import lombok.Getter;
 import net.silthus.sstats.entities.PlayerSession;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -22,18 +24,36 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        sessions.put(event.getPlayer().getUniqueId(), PlayerSession.start(event.getPlayer()));
+        startSession(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        Optional.ofNullable(sessions.remove(event.getPlayer().getUniqueId())).ifPresent(PlayerSession::end);
+        endSession(event.getPlayer(), PlayerSession.Reason.QUIT);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onPlayerQuit(PlayerKickEvent event) {
+    public void onPlayerKick(PlayerKickEvent event) {
 
-        Optional.ofNullable(sessions.remove(event.getPlayer().getUniqueId())).ifPresent(playerSession -> playerSession.end(PlayerSession.Reason.KICK));
+        endSession(event.getPlayer(), PlayerSession.Reason.KICK);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+
+        endSession(event.getPlayer(), PlayerSession.Reason.CHANGED_WORLD);
+        startSession(event.getPlayer());
+    }
+
+    private void startSession(Player player) {
+
+        sessions.put(player.getUniqueId(), PlayerSession.start(player));
+    }
+
+    private void endSession(Player player, PlayerSession.Reason reason) {
+
+        Optional.ofNullable(sessions.remove(player.getUniqueId()))
+                .ifPresent(playerSession -> playerSession.end(reason));
     }
 }

@@ -1,14 +1,11 @@
 package net.silthus.sstats.entities;
 
-import io.ebean.Finder;
 import io.ebean.Model;
 import io.ebean.annotation.DbEnumValue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -25,6 +22,7 @@ import java.util.UUID;
 public class PlayerSession extends Model {
 
     public static final String STATS_TIME_PLAYED = "time_played";
+    public static final String STATS_WORLD_TIME_PREFIX = "world_";
 
     public static PlayerSession start(Player player) {
         PlayerSession playerSession = new PlayerSession(player);
@@ -38,6 +36,8 @@ public class PlayerSession extends Model {
     private String playerName;
     private Instant joined;
     private Instant quit;
+    private String world;
+    private UUID worldId;
     private Reason reason;
 
     @Transient
@@ -51,6 +51,8 @@ public class PlayerSession extends Model {
         playerId(player.getUniqueId());
         playerName(player.getName());
         joined(Instant.now());
+        world(player.getWorld().getName());
+        worldId(player.getWorld().getUID());
     }
 
     public void end() {
@@ -63,7 +65,9 @@ public class PlayerSession extends Model {
         reason(reason);
         update();
 
-        Statistic.ONLINE_TIME.increment(player(), STATS_TIME_PLAYED, quit().toEpochMilli() - joined().toEpochMilli());
+        long timePlayed = quit().toEpochMilli() - joined().toEpochMilli();
+        Statistic.ONLINE_TIME.increment(player(), STATS_TIME_PLAYED, timePlayed);
+        Statistic.ONLINE_TIME.increment(player(), STATS_WORLD_TIME_PREFIX + worldId(), timePlayed);
     }
 
     public enum Reason {
@@ -71,7 +75,8 @@ public class PlayerSession extends Model {
         BAN,
         QUIT,
         SHUTDOWN,
-        UNKNOWN;
+        UNKNOWN,
+        CHANGED_WORLD;
 
         @DbEnumValue
         public String getValue() {

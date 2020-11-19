@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <alterColumn columnName="reason" tableName="sstats_player_sessions" type="varchar(13)" currentType="varchar(8)" currentNotnull="false" checkConstraint="check ( reason in ('KICK','BAN','QUIT','SHUTDOWN','UNKNOWN','CHANGED_WORLD'))" checkConstraintName="ck_sstats_player_sessions_reason"/>
+        <addColumn tableName="sstats_player_sessions">
+            <column name="world" type="varchar"/>
+            <column name="world_id" type="uuid"/>
+        </addColumn>
+    </changeSet>
+</migration>

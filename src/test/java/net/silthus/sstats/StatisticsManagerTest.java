@@ -4,11 +4,13 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import io.ebean.ValuePair;
+import net.silthus.ebean.Config;
 import net.silthus.ebean.EbeanWrapper;
+import net.silthus.sstats.entities.PlayerSession;
 import net.silthus.sstats.entities.PlayerStatistic;
+import net.silthus.sstats.entities.Statistic;
 import net.silthus.sstats.entities.StatisticEntry;
 import net.silthus.sstats.entities.StatisticLog;
-import net.silthus.sstats.entities.Statistic;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +44,12 @@ class StatisticsManagerTest {
 
     @BeforeEach
     void setUp() {
-        this.statisticsManager = new StatisticsManager(new EbeanWrapper().getDatabase());
+        this.statisticsManager = new StatisticsManager(new EbeanWrapper(Config.builder().entities(
+                PlayerSession.class,
+                PlayerStatistic.class,
+                StatisticEntry.class,
+                StatisticLog.class
+        ).build()).connect());
         this.statisticsManager.initStatistics();
     }
 

@@ -15,7 +15,7 @@ public final class StatisticsManager {
         this.database = database;
     }
 
-    void initStatistics() {
+    public void initStatistics() {
 
         for (Statistic statisticType : Statistic.values()) {
             StatisticEntry statistic = getDatabase().find(StatisticEntry.class, statisticType.getValue());
