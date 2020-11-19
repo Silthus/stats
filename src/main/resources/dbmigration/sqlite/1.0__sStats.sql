@@ -5,8 +5,10 @@ create table sstats_player_sessions (
   player_name                   varchar(255),
   joined                        timestamp,
   quit                          timestamp,
-  reason                        varchar(8),
-  constraint ck_sstats_player_sessions_reason check ( reason in ('KICK','BAN','QUIT','SHUTDOWN','UNKNOWN')),
+  world                         varchar(255),
+  world_id                      varchar(40),
+  reason                        varchar(13),
+  constraint ck_sstats_player_sessions_reason check ( reason in ('KICK','BAN','QUIT','SHUTDOWN','UNKNOWN','CHANGED_WORLD')),
   constraint pk_sstats_player_sessions primary key (id)
 );
 

@@ -5,7 +5,9 @@ create table sstats_player_sessions (
   player_name                   varchar(255),
   joined                        datetime(6),
   quit                          datetime(6),
-  reason                        varchar(8),
+  world                         varchar(255),
+  world_id                      varchar(40),
+  reason                        varchar(13),
   constraint pk_sstats_player_sessions primary key (id)
 );
 

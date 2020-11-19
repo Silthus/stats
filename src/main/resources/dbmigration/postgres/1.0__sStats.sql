@@ -3,10 +3,12 @@ create table sstats_player_sessions (
   id                            uuid not null,
   player_id                     uuid,
   player_name                   varchar(255),
-  joined                        timestamp,
-  quit                          timestamp,
-  reason                        varchar(8),
-  constraint ck_sstats_player_sessions_reason check ( reason in ('KICK','BAN','QUIT','SHUTDOWN','UNKNOWN')),
+  joined                        timestamptz,
+  quit                          timestamptz,
+  world                         varchar(255),
+  world_id                      uuid,
+  reason                        varchar(13),
+  constraint ck_sstats_player_sessions_reason check ( reason in ('KICK','BAN','QUIT','SHUTDOWN','UNKNOWN','CHANGED_WORLD')),
   constraint pk_sstats_player_sessions primary key (id)
 );
 
@@ -14,11 +16,11 @@ create table sstats_player_statistics (
   id                            uuid not null,
   player_id                     uuid,
   player_name                   varchar(255),
-  data                          clob,
+  data                          json,
   statistic_id                  varchar(255),
   version                       bigint not null,
-  when_created                  timestamp not null,
-  when_modified                 timestamp not null,
+  when_created                  timestamptz not null,
+  when_modified                 timestamptz not null,
   constraint pk_sstats_player_statistics primary key (id)
 );
 
@@ -34,10 +36,10 @@ create table sstats_statistics (
 create table sstats_log (
   id                            uuid not null,
   player_statistic_id           uuid,
-  diff                          clob,
+  diff                          json,
   version                       bigint not null,
-  when_created                  timestamp not null,
-  when_modified                 timestamp not null,
+  when_created                  timestamptz not null,
+  when_modified                 timestamptz not null,
   constraint pk_sstats_log primary key (id)
 );
 

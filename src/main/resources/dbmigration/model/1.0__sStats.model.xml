@@ -7,7 +7,9 @@
             <column name="player_name" type="varchar"/>
             <column name="joined" type="timestamp"/>
             <column name="quit" type="timestamp"/>
-            <column name="reason" type="varchar(8)" checkConstraint="check ( reason in ('KICK','BAN','QUIT','SHUTDOWN','UNKNOWN'))" checkConstraintName="ck_sstats_player_sessions_reason"/>
+            <column name="world" type="varchar"/>
+            <column name="world_id" type="uuid"/>
+            <column name="reason" type="varchar(13)" checkConstraint="check ( reason in ('KICK','BAN','QUIT','SHUTDOWN','UNKNOWN','CHANGED_WORLD'))" checkConstraintName="ck_sstats_player_sessions_reason"/>
         </createTable>
         <createTable name="sstats_player_statistics" identityType="external" pkName="pk_sstats_player_statistics">
             <column name="id" type="uuid" primaryKey="true" identity="true"/>
