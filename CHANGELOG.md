@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/Silthus/stats/compare/v1.1.2...v1.1.3) (2020-11-20)
+
+
+### Bug Fixes
+
+* **migrations:** prefix migrations with plugin name ([1c42918](https://github.com/Silthus/stats/commit/1c42918939c00aed9db842b54ed67d29a05d1e73))
+
 ## [1.1.2](https://github.com/Silthus/stats/compare/v1.1.1...v1.1.2) (2020-11-19)
 
 
