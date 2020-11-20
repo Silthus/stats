@@ -10,6 +10,7 @@ public class Migrations {
         DbMigration migration = DbMigration.create();
 
         migration.setName("sStats");
+        migration.setApplyPrefix("sStats");
 
         // location of the migration changeSet and where ddl is generated to
         migration.setPathToResources("src/main/resources");
