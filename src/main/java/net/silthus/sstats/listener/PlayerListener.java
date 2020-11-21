@@ -2,6 +2,8 @@ package net.silthus.sstats.listener;
 
 import lombok.Getter;
 import net.silthus.sstats.entities.PlayerSession;
+import net.silthus.sstats.entities.Statistic;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,6 +20,9 @@ import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
+    private static final String MAX_PLAYER_COUNT = "max_players";
+    private static final String ONLINE_PLAYER_COUNT = "online_players";
+
     @Getter
     private final Map<UUID, PlayerSession> sessions = new HashMap<>();
 
@@ -25,12 +30,15 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         startSession(event.getPlayer());
+        Statistic.PLAYER_COUNT.max(MAX_PLAYER_COUNT, Bukkit.getServer().getOnlinePlayers().size());
+        Statistic.PLAYER_COUNT.set(ONLINE_PLAYER_COUNT, Bukkit.getServer().getOnlinePlayers().size());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         endSession(event.getPlayer(), PlayerSession.Reason.QUIT);
+        Statistic.PLAYER_COUNT.set(ONLINE_PLAYER_COUNT, Bukkit.getServer().getOnlinePlayers().size() - 1);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

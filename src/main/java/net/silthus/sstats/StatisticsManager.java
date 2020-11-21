@@ -3,7 +3,7 @@ package net.silthus.sstats;
 import io.ebean.Database;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.silthus.sstats.entities.StatisticEntry;
+import net.silthus.sstats.entities.StatisticType;
 import net.silthus.sstats.entities.Statistic;
 
 public final class StatisticsManager {
@@ -18,9 +18,9 @@ public final class StatisticsManager {
     public void initStatistics() {
 
         for (Statistic statisticType : Statistic.values()) {
-            StatisticEntry statistic = getDatabase().find(StatisticEntry.class, statisticType.getValue());
+            StatisticType statistic = getDatabase().find(StatisticType.class, statisticType.getValue());
             if (statistic == null) {
-                new StatisticEntry(statisticType).save();
+                new StatisticType(statisticType).save();
             }
         }
     }

@@ -6,11 +6,8 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import net.silthus.ebean.Config;
 import net.silthus.ebean.EbeanWrapper;
 import net.silthus.sstats.StatisticsManager;
-import net.silthus.sstats.entities.PlayerSession;
-import net.silthus.sstats.entities.PlayerStatistic;
-import net.silthus.sstats.entities.Statistic;
-import net.silthus.sstats.entities.StatisticEntry;
-import net.silthus.sstats.entities.StatisticLog;
+import net.silthus.sstats.entities.*;
+import net.silthus.sstats.entities.StatisticType;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -35,8 +32,8 @@ class PlayerListenerTest {
         playerListener = new PlayerListener();
         this.statisticsManager = new StatisticsManager(new EbeanWrapper(Config.builder().entities(
                 PlayerSession.class,
-                PlayerStatistic.class,
                 StatisticEntry.class,
+                StatisticType.class,
                 StatisticLog.class
         ).build()).connect());
         this.statisticsManager.initStatistics();

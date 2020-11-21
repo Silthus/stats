@@ -6,11 +6,8 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import io.ebean.ValuePair;
 import net.silthus.ebean.Config;
 import net.silthus.ebean.EbeanWrapper;
-import net.silthus.sstats.entities.PlayerSession;
-import net.silthus.sstats.entities.PlayerStatistic;
-import net.silthus.sstats.entities.Statistic;
-import net.silthus.sstats.entities.StatisticEntry;
-import net.silthus.sstats.entities.StatisticLog;
+import net.silthus.sstats.entities.*;
+import net.silthus.sstats.entities.StatisticType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,8 +43,8 @@ class StatisticsManagerTest {
     void setUp() {
         this.statisticsManager = new StatisticsManager(new EbeanWrapper(Config.builder().entities(
                 PlayerSession.class,
-                PlayerStatistic.class,
                 StatisticEntry.class,
+                StatisticType.class,
                 StatisticLog.class
         ).build()).connect());
         this.statisticsManager.initStatistics();
@@ -62,7 +59,7 @@ class StatisticsManagerTest {
         void shouldCreateStatisticsForAllEnumTypes() {
 
             statisticsManager.initStatistics();
-            assertThat(statisticsManager.getDatabase().find(StatisticEntry.class).findList())
+            assertThat(statisticsManager.getDatabase().find(StatisticType.class).findList())
                     .hasSameSizeAs(Statistic.values());
         }
 
@@ -72,7 +69,7 @@ class StatisticsManagerTest {
 
             statisticsManager.initStatistics();
             statisticsManager.initStatistics();
-            assertThat(statisticsManager.getDatabase().find(StatisticEntry.class).findList())
+            assertThat(statisticsManager.getDatabase().find(StatisticType.class).findList())
                     .hasSameSizeAs(Statistic.values());
         }
     }
@@ -83,18 +80,18 @@ class StatisticsManagerTest {
 
         @Nested
         @DisplayName("PlayerStatistic")
-        class PlayerStatisticBean {
+        class StatisticEntryBean {
 
             @Test
             @DisplayName("should create a entry in the database")
             void shouldSavePlayerStats() {
 
                 PlayerMock player = server.addPlayer();
-                PlayerStatistic playerStatistic = PlayerStatistic.of(player, Statistic.ONLINE_TIME).data(Map.of("online_time", 5));
-                playerStatistic.save();
+                StatisticEntry statisticEntry = StatisticEntry.of(player, Statistic.ONLINE_TIME).data(Map.of("online_time", 5));
+                statisticEntry.save();
 
-                assertThat(statisticsManager.getDatabase().find(PlayerStatistic.class).findList())
-                        .contains(playerStatistic);
+                assertThat(statisticsManager.getDatabase().find(StatisticEntry.class).findList())
+                        .contains(statisticEntry);
             }
 
             @Test
@@ -102,13 +99,13 @@ class StatisticsManagerTest {
             void shouldUpdateEntryData() {
 
                 PlayerMock player = server.addPlayer();
-                PlayerStatistic.of(player, Statistic.ONLINE_TIME).data(Map.of("online_time", 5L)).save();
-                PlayerStatistic.of(player, Statistic.ONLINE_TIME).data(Map.of("online_time", 10L)).save();
+                StatisticEntry.of(player, Statistic.ONLINE_TIME).data(Map.of("online_time", 5L)).save();
+                StatisticEntry.of(player, Statistic.ONLINE_TIME).data(Map.of("online_time", 10L)).save();
 
-                assertThat(statisticsManager.getDatabase().find(PlayerStatistic.class).findList())
+                assertThat(statisticsManager.getDatabase().find(StatisticEntry.class).findList())
                         .hasSize(1)
                         .first()
-                        .extracting(PlayerStatistic::data)
+                        .extracting(StatisticEntry::data)
                         .isEqualTo(Map.of("online_time", 10L));
             }
 
@@ -121,10 +118,10 @@ class StatisticsManagerTest {
                         .add("playtime", 10000L)
                         .save();
 
-                assertThat(statisticsManager.getDatabase().find(PlayerStatistic.class).findList())
+                assertThat(statisticsManager.getDatabase().find(StatisticEntry.class).findList())
                         .hasSize(1)
                         .first()
-                        .extracting(PlayerStatistic::playerId, PlayerStatistic::data)
+                        .extracting(StatisticEntry::playerId, StatisticEntry::data)
                         .contains(player.getUniqueId(), Map.of("foo", "bar", "playtime", 10000L));
             }
 
@@ -137,7 +134,7 @@ class StatisticsManagerTest {
                         .add("playtime", 10000L)
                         .save();
 
-                PlayerStatistic statistic = Statistic.ONLINE_TIME.get(player);
+                StatisticEntry statistic = Statistic.ONLINE_TIME.get(player);
                 assertThat(statistic.get("playtime", Long.class))
                         .contains(10000L);
                 assertThat(statistic.get("foo", String.class))
@@ -149,15 +146,15 @@ class StatisticsManagerTest {
             void shouldAutoCreateLog() {
 
                 PlayerMock player = server.addPlayer();
-                PlayerStatistic playerStatistic = PlayerStatistic.of(player, Statistic.ONLINE_TIME).data(Map.of("online_time", 5));
-                playerStatistic.save();
+                StatisticEntry statisticEntry = StatisticEntry.of(player, Statistic.ONLINE_TIME).data(Map.of("online_time", 5));
+                statisticEntry.save();
 
                 List<StatisticLog> list = statisticsManager.getDatabase().find(StatisticLog.class).findList();
                 assertThat(list)
                         .hasSize(1)
                         .first()
-                        .extracting(StatisticLog::playerStatistic, statisticLog -> statisticLog.diff().size())
-                        .contains(playerStatistic, 0);
+                        .extracting(StatisticLog::statisticEntry, statisticLog -> statisticLog.diff().size())
+                        .contains(statisticEntry, 0);
             }
 
             @Test
@@ -165,9 +162,9 @@ class StatisticsManagerTest {
             void shouldSaveDiffToLog() {
 
                 PlayerMock player = server.addPlayer();
-                PlayerStatistic.of(player, Statistic.ONLINE_TIME)
+                StatisticEntry.of(player, Statistic.ONLINE_TIME)
                         .data(Map.of("online_time", 5)).save();
-                PlayerStatistic.of(player, Statistic.ONLINE_TIME)
+                StatisticEntry.of(player, Statistic.ONLINE_TIME)
                         .data(Map.of("online_time", 10, "last_logon", "today")).save();
 
                 List<StatisticLog> list = statisticsManager.getDatabase().find(StatisticLog.class).findList();

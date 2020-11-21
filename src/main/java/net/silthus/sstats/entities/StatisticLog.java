@@ -20,7 +20,7 @@ import java.util.Map;
 public class StatisticLog extends BaseEntity {
 
     @ManyToOne
-    private PlayerStatistic playerStatistic;
+    private StatisticEntry statisticEntry;
     @DbJson
     private Map<String, ValuePair> diff = new HashMap<>();
 
@@ -28,9 +28,9 @@ public class StatisticLog extends BaseEntity {
 
     }
 
-    public StatisticLog(PlayerStatistic playerStatistic, Map<String, ValuePair> diff) {
+    public StatisticLog(StatisticEntry statisticEntry, Map<String, ValuePair> diff) {
 
-        playerStatistic(playerStatistic);
+        statisticEntry(statisticEntry);
         diff(diff);
     }
 }

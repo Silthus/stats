@@ -7,7 +7,8 @@ import org.bukkit.OfflinePlayer;
 @Getter
 public enum Statistic {
 
-    ONLINE_TIME("Online Time", "The time in milliseconds the player has been online on the server.");
+    ONLINE_TIME("Online Time", "The time in milliseconds the player has been online on the server."),
+    PLAYER_COUNT("Player Count", "The number of online players on the server.");
 
     private final String name;
     private final String description;
@@ -17,27 +18,45 @@ public enum Statistic {
         this.description = description;
     }
 
-    public PlayerStatistic add(OfflinePlayer player, String key, Object value) {
+    public StatisticEntry add(OfflinePlayer player, String key, Object value) {
 
-        PlayerStatistic playerStatistic = PlayerStatistic.of(player, this);
-        playerStatistic.data().put(key, value);
-        playerStatistic.save();
-        return playerStatistic;
+        StatisticEntry statisticEntry = StatisticEntry.of(player, this);
+        statisticEntry.data().put(key, value);
+        statisticEntry.save();
+        return statisticEntry;
     }
 
-    public PlayerStatistic increment(OfflinePlayer player, String key, long value) {
+    public StatisticEntry increment(OfflinePlayer player, String key, long value) {
 
-        PlayerStatistic playerStatistic = PlayerStatistic.of(player, this);
-        long currentValue = (long) playerStatistic.data().getOrDefault(key, 0L);
+        StatisticEntry statisticEntry = StatisticEntry.of(player, this);
+        long currentValue = (long) statisticEntry.data().getOrDefault(key, 0L);
         currentValue += value;
-        playerStatistic.data().put(key, currentValue);
-        playerStatistic.save();
-        return playerStatistic;
+        statisticEntry.data().put(key, currentValue);
+        statisticEntry.save();
+        return statisticEntry;
     }
 
-    public PlayerStatistic get(OfflinePlayer player) {
+    public StatisticEntry max(String key, long value) {
 
-        return PlayerStatistic.of(player, this);
+        StatisticEntry entry = StatisticEntry.of(this);
+        long currentCount = (long) entry.data().getOrDefault(key, 0L);
+        if (value >= currentCount) {
+            entry.data().put(key, value);
+            entry.save();
+        }
+        return entry;
+    }
+
+    public StatisticEntry set(String key, Object value) {
+        StatisticEntry entry = StatisticEntry.of(this);
+        entry.data().put(key, value);
+        entry.save();
+        return entry;
+    }
+
+    public StatisticEntry get(OfflinePlayer player) {
+
+        return StatisticEntry.of(player, this);
     }
 
     @DbEnumValue

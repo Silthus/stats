@@ -6,8 +6,8 @@ import lombok.Getter;
 import net.silthus.ebean.Config;
 import net.silthus.ebean.EbeanWrapper;
 import net.silthus.sstats.entities.PlayerSession;
-import net.silthus.sstats.entities.PlayerStatistic;
 import net.silthus.sstats.entities.StatisticEntry;
+import net.silthus.sstats.entities.StatisticType;
 import net.silthus.sstats.entities.StatisticLog;
 import net.silthus.sstats.listener.PlayerListener;
 import org.bukkit.Bukkit;
@@ -57,8 +57,8 @@ public class StatsPlugin extends JavaPlugin {
         Config dbConfig = Config.builder(this)
                 .entities(
                         PlayerSession.class,
-                        PlayerStatistic.class,
                         StatisticEntry.class,
+                        StatisticType.class,
                         StatisticLog.class
                 )
                 .build();
