@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Silthus/stats/compare/v1.1.3...v1.2.0) (2020-11-21)
+
+
+### Features
+
+* **stats:** add global max players statistic ([ad1c5c7](https://github.com/Silthus/stats/commit/ad1c5c718428fb74f288299f33d57ecea2c6cd16))
+
 ## [1.1.3](https://github.com/Silthus/stats/compare/v1.1.2...v1.1.3) (2020-11-20)
 
 
