@@ -62,7 +62,7 @@ dependencies {
 
     implementation 'io.ebean:ebean:12.6.5'
     implementation 'io.ebean:ebean-querybean:12.7.1'
-    annotationProcessor 'io.ebean:querybean-generator:12.6.7'
+    annotationProcessor 'io.ebean:querybean-generator:12.8.1'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
